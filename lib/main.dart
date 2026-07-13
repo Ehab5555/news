@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/web.dart';
 import 'package:news/home/view/screens/home_screen.dart';
+import 'package:news/home/view_model/cubit/theme_cubit.dart';
 import 'package:news/news/view/news_details.dart';
 import 'package:news/search/view/screens/search_screen.dart';
 import 'package:news/shared/app_theme.dart';
+import 'package:news/splash/view/screens/splash_screen.dart';
 
 void main() {
   runApp(const NewsApp());
@@ -13,16 +17,26 @@ class NewsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      routes: {
-        HomeScreen.routeName: (_) => const HomeScreen(),
-        SearchScreen.routeName: (_) => const SearchScreen(),
-        NewsDetails.routeName: (_) => const NewsDetails(),
-      },
-      initialRoute: HomeScreen.routeName,
-      theme: AppTheme.lightTheme,
-      themeMode: ThemeMode.light,
+    return BlocProvider(
+      create: (context) => ThemeCubit(),
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, theme) {
+          Logger().d(theme);
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            routes: {
+              SplashScreen.routeName: (_) => const SplashScreen(),
+              HomeScreen.routeName: (_) => const HomeScreen(),
+              SearchScreen.routeName: (_) => const SearchScreen(),
+              NewsDetails.routeName: (_) => const NewsDetails(),
+            },
+            initialRoute: SplashScreen.routeName,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: theme,
+          );
+        },
+      ),
     );
   }
 }

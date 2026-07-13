@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:news/home/view/screens/home_screen.dart';
-import 'package:news/news/view_model/news_view_model.dart';
+import 'package:news/search/view_model/cubit/search_cubit.dart';
 import 'package:news/shared/app_theme.dart';
 
 class SearchTextFormField extends StatefulWidget {
@@ -16,7 +15,6 @@ class _SearchTextFormFieldState extends State<SearchTextFormField> {
 
   @override
   Widget build(BuildContext context) {
-    final newsViewModel = BlocProvider.of<NewsViewModel>(context);
     return SizedBox(
       width: MediaQuery.sizeOf(context).width * 0.75,
       height: MediaQuery.sizeOf(context).height * 0.05,
@@ -28,11 +26,7 @@ class _SearchTextFormFieldState extends State<SearchTextFormField> {
         decoration: InputDecoration(
           prefixIcon: IconButton(
             onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                HomeScreen.routeName,
-                (route) => false,
-              );
+              Navigator.pop(context);
             },
             icon: Icon(
               Icons.close,
@@ -41,7 +35,7 @@ class _SearchTextFormFieldState extends State<SearchTextFormField> {
           ),
           suffixIcon: IconButton(
             onPressed: () {
-              newsViewModel.newsSearch(controller.text);
+              context.read<SearchCubit>().newsSearch(controller.text);
             },
             icon: Icon(
               Icons.search,

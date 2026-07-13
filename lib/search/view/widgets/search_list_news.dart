@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news/news/view/news_details.dart';
 import 'package:news/news/view/news_item.dart';
-import 'package:news/news/view_model/news_states.dart';
-import 'package:news/news/view_model/news_view_model.dart';
-
+import 'package:news/search/view_model/cubit/search_cubit.dart';
 import 'package:news/shared/widgets/error_indicator.dart';
 import 'package:news/shared/widgets/loading_indicator.dart';
 
@@ -18,14 +16,13 @@ class SearchListNews extends StatefulWidget {
 class _SearchListNewsState extends State<SearchListNews> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
-      bloc: BlocProvider.of<NewsViewModel>(context),
+    return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
-        if (state is GetNewsLoading) {
+        if (state is SearchLoading) {
           return const LoadingIndicator();
-        } else if (state is GetNewsError) {
-          return ErrorIndicator(errorMessage: state.errorMessage);
-        } else if (state is NewsSearch) {
+        } else if (state is SearchError) {
+          return ErrorIndicator(errorMessage: state.message);
+        } else if (state is SearchSuccess) {
           if (state.news.length == 1) {
             return NewsItem(news: state.news[0]);
           }
@@ -40,6 +37,7 @@ class _SearchListNewsState extends State<SearchListNews> {
               },
               child: NewsItem(news: state.news[index]),
             ),
+            itemCount: state.news.length,
           );
         } else {
           return Container();
