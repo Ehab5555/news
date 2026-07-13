@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news/categories/data/model/category_model.dart';
 
 import 'package:news/categories/view/categories_item.dart';
+import 'package:news/home/view_model/cubit/theme_cubit.dart';
 import 'package:news/shared/app_theme.dart';
 
 class CategoriesGrid extends StatefulWidget {
@@ -65,7 +67,9 @@ class _CategoriesGridState extends State<CategoriesGrid> {
           Text(
             'Pick your category of interest',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppTheme.navy,
+                  color: context.read<ThemeCubit>().state.isDark
+                      ? AppTheme.white
+                      : AppTheme.navy,
                 ),
           ),
           Expanded(

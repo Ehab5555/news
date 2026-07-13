@@ -1,6 +1,8 @@
+import 'package:equatable/equatable.dart';
+
 import 'news.dart';
 
-class NewsResponse {
+class NewsResponse extends Equatable {
   final String? status;
   final int? totalResults;
   final List<News>? news;
@@ -20,4 +22,11 @@ class NewsResponse {
         'totalResults': totalResults,
         'articles': news?.map((e) => e.toJson()).toList(),
       };
+
+  @override
+  List<Object?> get props => [
+        status,
+        totalResults,
+        news,
+      ];
 }

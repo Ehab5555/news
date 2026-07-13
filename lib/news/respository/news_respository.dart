@@ -9,8 +9,4 @@ class NewsRespository {
   Future<List<News>> getNews(String sourceId) async {
     return newsDataSource.getNews(sourceId);
   }
-
-  Future<List<News>> newsSearch(String keyword) async {
-    return newsDataSource.newsSearch(keyword);
-  }
 }

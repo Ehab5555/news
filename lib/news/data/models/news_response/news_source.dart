@@ -1,4 +1,6 @@
-class NewsSource {
+import 'package:equatable/equatable.dart';
+
+class NewsSource extends Equatable {
   final String? id;
   final String? name;
 
@@ -13,4 +15,10 @@ class NewsSource {
         'id': id,
         'name': name,
       };
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+      ];
 }

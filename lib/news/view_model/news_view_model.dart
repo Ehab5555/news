@@ -18,14 +18,4 @@ class NewsViewModel extends Cubit<NewsStates> {
       emit(GetNewsError(error.toString()));
     }
   }
-
-  Future<void> newsSearch(String keyword) async {
-    emit(GetNewsLoading());
-    try {
-      final news = await newsRespository.newsSearch(keyword);
-      emit(NewsSearch(news));
-    } catch (error) {
-      emit(GetNewsError(error.toString()));
-    }
-  }
 }

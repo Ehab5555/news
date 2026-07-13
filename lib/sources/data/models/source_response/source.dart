@@ -1,4 +1,6 @@
-class Source {
+import 'package:equatable/equatable.dart';
+
+class Source extends Equatable {
   final String? id;
   final String? name;
   final String? description;
@@ -36,4 +38,15 @@ class Source {
         'language': language,
         'country': country,
       };
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        description,
+        url,
+        category,
+        language,
+        country,
+      ];
 }

@@ -1,6 +1,8 @@
+import 'package:equatable/equatable.dart';
+
 import 'source.dart';
 
-class SourceResponse {
+class SourceResponse extends Equatable {
   final String? status;
   final List<Source>? sources;
 
@@ -19,4 +21,10 @@ class SourceResponse {
         'status': status,
         'sources': sources?.map((e) => e.toJson()).toList(),
       };
+
+  @override
+  List<Object?> get props => [
+        status,
+        sources,
+      ];
 }

@@ -3,8 +3,7 @@ import 'package:news/sources/data/models/source_response/source.dart';
 
 class SourcesRespository {
   final SourceDataSource sourceDataSource;
-
-  SourcesRespository(this.sourceDataSource);
+  const SourcesRespository(this.sourceDataSource);
 
   Future<List<Source>> getSources(String categoryId) async {
     return sourceDataSource.getSources(categoryId);

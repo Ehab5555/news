@@ -1,6 +1,6 @@
 import 'package:news/sources/data/models/source_response/source.dart';
 
-abstract class SourcesStates {}
+sealed class SourcesStates {}
 
 class SourcesInitial extends SourcesStates {}
 
