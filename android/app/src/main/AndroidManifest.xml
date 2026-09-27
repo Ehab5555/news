@@ -1,4 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 🟢 أضف هذا الجزء هنا -->
+    <queries>
+        <intent>
+            <action android:name="Intent.ACTION_VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="Intent.ACTION_VIEW" />
+            <data android:scheme="http" />
+        </intent>
+    </queries>
     <application
         android:label="News"
         android:name="${applicationName}"

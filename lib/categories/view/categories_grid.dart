@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news/categories/data/model/category_model.dart';
-
 import 'package:news/categories/view/categories_item.dart';
 import 'package:news/home/view_model/cubit/theme_cubit.dart';
 import 'package:news/shared/app_theme.dart';
@@ -18,7 +17,7 @@ class CategoriesGrid extends StatefulWidget {
 }
 
 class _CategoriesGridState extends State<CategoriesGrid> {
-  List<CategoryModel> categories = [
+  final List<CategoryModel> categories = [
     CategoryModel(
       id: 'sports',
       title: 'Sports',
@@ -45,7 +44,7 @@ class _CategoriesGridState extends State<CategoriesGrid> {
     ),
     CategoryModel(
       id: 'entertainment',
-      title: 'entertainment',
+      title: 'Entertainment',
       imgName: 'environment',
       color: const Color(0xff4882CF),
     ),
@@ -56,30 +55,49 @@ class _CategoriesGridState extends State<CategoriesGrid> {
       color: const Color(0xffED1E79),
     ),
   ];
+
   @override
   Widget build(BuildContext context) {
+    // استخدام watch للتحديث الفوري عند تغيير الثيم
+    final isDarkMode = context.watch<ThemeCubit>().state == ThemeMode.dark;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Column(
-        spacing: 24,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // عنوان ترحيبي فاخر
+          Text(
+            'Explore Categories',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+              color: isDarkMode ? AppTheme.white : AppTheme.navy,
+            ),
+          ),
+          const SizedBox(height: 4),
           Text(
             'Pick your category of interest',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: context.read<ThemeCubit>().state.isDark
-                      ? AppTheme.white
-                      : AppTheme.navy,
-                ),
+            style: TextStyle(
+              fontSize: 13,
+              color: isDarkMode ? Colors.white54 : Colors.grey[600],
+            ),
           ),
+          const SizedBox(height: 20),
+
+          // شبكة التصنيفات
           Expanded(
             child: GridView.builder(
-              padding: EdgeInsets.only(left: 24),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.zero,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisSpacing: 24,
-                crossAxisSpacing: 24,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                childAspectRatio: 0.95, // تحسين أبعاد الكارد ليكون متناسقاً
               ),
+              itemCount: categories.length,
               itemBuilder: (_, index) => GestureDetector(
                 onTap: () => widget.onCategorySelected(categories[index].id),
                 child: CategoriesItem(
@@ -87,7 +105,6 @@ class _CategoriesGridState extends State<CategoriesGrid> {
                   index: index,
                 ),
               ),
-              itemCount: categories.length,
             ),
           ),
         ],

@@ -12,21 +12,42 @@ class SourceItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOut,
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
+        color: isSelected
+            ? AppTheme.primaryColor
+            : (isDarkMode ? const Color(0xFF1E1E1E) : Colors.white),
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          width: 2,
-          color: AppTheme.primaryColor,
+          width: 1, // تم تقليل السمك ليكون أرقى
+          color: isSelected
+              ? Colors.transparent
+              : AppTheme.primaryColor.withValues(alpha: 0.3),
         ),
-        color: isSelected ? AppTheme.primaryColor : Colors.transparent,
-        borderRadius: BorderRadius.circular(25),
+        boxShadow: isSelected
+            ? [
+                BoxShadow(
+                  color: AppTheme.primaryColor.withValues(alpha: 0.25),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : [],
       ),
       child: Text(
         source,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: isSelected ? AppTheme.white : AppTheme.primaryColor,
-            ),
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+          color: isSelected
+              ? AppTheme.white
+              : (isDarkMode ? Colors.white70 : AppTheme.primaryColor),
+        ),
       ),
     );
   }

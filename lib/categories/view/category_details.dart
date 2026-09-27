@@ -18,28 +18,58 @@ class CategoryDetails extends StatefulWidget {
 }
 
 class _CategoryDetailsState extends State<CategoryDetails> {
-  final sourceViewModel = SourceViewModel();
+  late final SourceViewModel _sourceViewModel;
 
   @override
   void initState() {
-    sourceViewModel.getSources(widget.categoryId);
     super.initState();
+    _sourceViewModel = SourceViewModel();
+    // جلب المصادر الخاصة بالتصنيف عند البدء
+    _sourceViewModel.getSources(widget.categoryId);
+  }
+
+  @override
+  void didUpdateWidget(covariant CategoryDetails oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // جلب المصادر مجدداً في حال تم تغيير التصنيف
+    if (oldWidget.categoryId != widget.categoryId) {
+      _sourceViewModel.getSources(widget.categoryId);
+    }
+  }
+
+  @override
+  void dispose() {
+    _sourceViewModel.close(); // إغلاق الـ ViewModel لمنع تسريب الذاكرة
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sourceViewModel,
+    return BlocProvider.value(
+      value: _sourceViewModel,
       child: BlocBuilder<SourceViewModel, SourcesStates>(
-        builder: (_, state) {
+        builder: (context, state) {
           if (state is GetSourcesLoading) {
-            return const LoadingIndicator();
+            return const Center(child: LoadingIndicator());
           } else if (state is GetSourcesError) {
-            return ErrorIndicator(errorMessage: state.errorMessage);
+            return Center(
+              child: ErrorIndicator(
+                errorMessage: state.errorMessage,
+                onRetry: () => _sourceViewModel.getSources(widget.categoryId),
+              ),
+            );
           } else if (state is GetSourcesSuccess) {
+            if (state.sources.isEmpty) {
+              return const Center(
+                child: Text(
+                  'No news sources available for this category.',
+                  style: TextStyle(fontSize: 13, color: Colors.grey),
+                ),
+              );
+            }
             return SourcesTab(sources: state.sources);
           } else {
-            return Container();
+            return const SizedBox.shrink();
           }
         },
       ),

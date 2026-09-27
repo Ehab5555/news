@@ -16,41 +16,72 @@ class NewsList extends StatefulWidget {
 }
 
 class _NewsListState extends State<NewsList> {
-  final newsViewModel = NewsViewModel();
+  late final NewsViewModel _newsViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _newsViewModel = NewsViewModel();
+    // جلب البيانات مرة واحدة فقط عند إنشاء الـ State
+    _newsViewModel.getNews(widget.sourceId);
+  }
+
+  @override
+  void didUpdateWidget(covariant NewsList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // جلب البيانات مجدداً فقط إذا تغيرت المصادر (Source ID)
+    if (oldWidget.sourceId != widget.sourceId) {
+      _newsViewModel.getNews(widget.sourceId);
+    }
+  }
+
+  @override
+  void dispose() {
+    _newsViewModel.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    newsViewModel.getNews(
-      widget.sourceId,
-    );
-    return BlocProvider(
-      create: (_) => newsViewModel,
+    return BlocProvider.value(
+      value: _newsViewModel,
       child: BlocBuilder<NewsViewModel, NewsStates>(
-        builder: (_, state) {
+        builder: (context, state) {
           if (state is GetNewsLoading) {
-            return const LoadingIndicator();
+            return const Center(child: LoadingIndicator());
           } else if (state is GetNewsError) {
-            return ErrorIndicator(errorMessage: state.errorMessage);
+            return Center(
+                child: ErrorIndicator(errorMessage: state.errorMessage));
           } else if (state is GetNewsSuccess) {
+            if (state.news.isEmpty) {
+              return const Center(
+                child: Text(
+                  'No articles found for this source.',
+                  style: TextStyle(color: Colors.grey, fontSize: 13),
+                ),
+              );
+            }
             return ListView.builder(
-              itemBuilder: (_, index) {
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              itemCount: state.news.length,
+              itemBuilder: (context, index) {
+                final article = state.news[index];
                 return GestureDetector(
                   onTap: () {
                     Navigator.pushNamed(
                       context,
                       NewsDetails.routeName,
-                      arguments: state.news[index],
+                      arguments: article,
                     );
                   },
                   child: NewsItem(
-                    news: state.news[index],
+                    news: article,
                   ),
                 );
               },
-              itemCount: state.news.length,
             );
           } else {
-            return Container();
+            return const SizedBox.shrink();
           }
         },
       ),
